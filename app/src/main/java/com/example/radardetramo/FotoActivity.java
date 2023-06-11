@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
@@ -22,7 +23,9 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import okhttp3.OkHttpClient;
@@ -36,7 +39,7 @@ import retrofit2.http.Url;
 public class FotoActivity extends AppCompatActivity {
 
     Tramo t;
-    final String URLSTRING = "http://localhost:8080/RadarDeTramoServidor/resources/listados/insert/";
+    final String URLSTRING = "http://192.168.1.52:8080/RadarDeTramoServidor";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,46 +86,15 @@ public class FotoActivity extends AppCompatActivity {
         pv.setFoto(imageInByte);
         pv.setId_tramo(this.t.getId());
 
-        enviarDatos2(pv);
-
-        Log.i("Envío de infractor", "Fecha/hora: " + pv.getFecha_hora() +
-                " || Id tramo " + pv.getId_tramo() + " || pk: " + pv.getPunto_kilometrico());
-        Log.i("Imagen del infractor", Arrays.toString(pv.getFoto()));
+        enviarDatos(pv);
 
         Intent i = new Intent(this, FotoActivity.class);
         i.putExtra("tramo", this.t);
         startActivity(i);
     }
 
+
     public void enviarDatos(PasoVehiculo pv) {
-        try {
-            URL url = new URL(URLSTRING);
-            HttpURLConnection http = (HttpURLConnection) url.openConnection();
-            http.setRequestMethod("POST");
-            http.setRequestProperty("Content-Type", "application/JSON");
-            Uri.Builder params = new Uri.Builder()
-                    .appendQueryParameter("fecha_hora", "" + pv.getFecha_hora())
-                    .appendQueryParameter("punto_kilometrico", "" + pv.getPunto_kilometrico())
-                    .appendQueryParameter("id_tramo", "" + pv.getId_tramo())
-                    .appendQueryParameter("foto", pv.getStringOfBytes());
-
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(http.getOutputStream()));
-            bw.write(params.build().getEncodedQuery());
-
-            bw.flush();
-            bw.close();
-            http.connect();
-
-            Log.i("http", http.getURL().toString());
-
-        } catch (MalformedURLException mue) {
-            Log.i("Malformed URL exception", mue.getMessage());
-        } catch (IOException ioe) {
-            Log.i("IO exception", ioe.getMessage());
-        }
-    }
-
-    public void enviarDatos2(PasoVehiculo pv) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(URLSTRING)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -130,22 +102,26 @@ public class FotoActivity extends AppCompatActivity {
 
         ApiService apiService = retrofit.create(ApiService.class);
 
-        Call<RespuestaServidor> call = apiService.enviarPasoVehiculo(pv);
-
-        call.enqueue(new Callback<RespuestaServidor>() {
+        Call<Void> call = apiService.insertPasoVehiculo(pv);
+        call.enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<RespuestaServidor> call, Response<RespuestaServidor> response) {
-                RespuestaServidor respuesta = response.body();
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                Log.i("Envío correcto", response.message());
+                Log.i("Envío de infractor", "Fecha/hora: " + pv.getFecha_hora() +
+                        " || Id tramo " + pv.getId_tramo() + " || pk: " + pv.getPunto_kilometrico());
+                Log.i("Imagen del infractor", Arrays.toString(pv.getFoto()));
                 if (response.isSuccessful()) {
-                    Log.i("Respuesta del servidor: " + respuesta.getCodigo(), respuesta.getMensaje());
+                    // Realiza las acciones necesarias en caso de éxito
                 } else {
-                    Log.i("Respuesta del servidor: " + respuesta.getCodigo(), respuesta.getMensaje());
+                    Log.i("Error en en envío", response.message());
+                    Log.i("Error en envío de infractor", "Fecha/hora: " + pv.getFecha_hora() +
+                            " || Id tramo " + pv.getId_tramo() + " || pk: " + pv.getPunto_kilometrico());
                 }
             }
 
             @Override
-            public void onFailure(Call<RespuestaServidor> call, Throwable t) {
-                Log.i("Error en la solicitud", "");
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.i("Error la comunicación con el servidor", "Error");
             }
         });
     }

@@ -1,6 +1,7 @@
 package com.example.radardetramo;
 
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 
 
 public class PasoVehiculo implements Serializable{
@@ -96,7 +97,7 @@ public class PasoVehiculo implements Serializable{
     }
 
     public String getStringOfBytes(){
-        String string = new String (this.getFoto());
+        String string = new String (this.getFoto(), StandardCharsets.UTF_8);
         return string;
     }
 }
