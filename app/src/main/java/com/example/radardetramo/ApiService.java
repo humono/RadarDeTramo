@@ -8,6 +8,6 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface ApiService {
-    @POST("/resources/lists/insert")
-    Call<Void> insertPasoVehiculo(@Body PasoVehiculo pv);
+    @POST("resources/listados/insertar")
+    Call<Void> insertar(@Body PasoVehiculo pv);
 }

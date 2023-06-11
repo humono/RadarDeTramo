@@ -39,7 +39,7 @@ import retrofit2.http.Url;
 public class FotoActivity extends AppCompatActivity {
 
     Tramo t;
-    final String URLSTRING = "http://192.168.1.52:8080/RadarDeTramoServidor";
+    final String URLSTRING = "http://192.168.1.52:8080/RadarDeTramoServidor/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,15 +76,18 @@ public class FotoActivity extends AppCompatActivity {
         Log.i("Tramo", this.t.toString());
 
         ImageView imageCoche = (ImageView) findViewById(R.id.imageCoche);
-        Bitmap bitmap = ((BitmapDrawable) imageCoche.getDrawable()).getBitmap();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] imageInByte = baos.toByteArray();
+        //Bitmap bitmap = ((BitmapDrawable) imageCoche.getDrawable()).getBitmap();
+        //ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        //bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        //byte[] imageInByte = baos.toByteArray();
 
         pv.setFecha_hora(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
         pv.setPunto_kilometrico(this.t.getPunto_kilometrico());
-        pv.setFoto(imageInByte);
+        //pv.setFoto(imageInByte);
+        pv.setFoto(null);
         pv.setId_tramo(this.t.getId());
+        pv.setVelocidad(0);
+        pv.setMatricula_vehiculo(null);
 
         enviarDatos(pv);
 
@@ -102,7 +105,8 @@ public class FotoActivity extends AppCompatActivity {
 
         ApiService apiService = retrofit.create(ApiService.class);
 
-        Call<Void> call = apiService.insertPasoVehiculo(pv);
+        Call<Void> call = apiService.insertar(pv);
+
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -111,7 +115,7 @@ public class FotoActivity extends AppCompatActivity {
                         " || Id tramo " + pv.getId_tramo() + " || pk: " + pv.getPunto_kilometrico());
                 Log.i("Imagen del infractor", Arrays.toString(pv.getFoto()));
                 if (response.isSuccessful()) {
-                    // Realiza las acciones necesarias en caso de éxito
+                   //COrrecto
                 } else {
                     Log.i("Error en en envío", response.message());
                     Log.i("Error en envío de infractor", "Fecha/hora: " + pv.getFecha_hora() +
@@ -121,7 +125,7 @@ public class FotoActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                Log.i("Error la comunicación con el servidor", "Error");
+                Log.i("Error", "Error en la comunicación con el servidor");
             }
         });
     }

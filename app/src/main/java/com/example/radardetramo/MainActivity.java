@@ -10,6 +10,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.net.InetAddress;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -43,6 +46,16 @@ public class MainActivity extends AppCompatActivity {
             Intent i = new Intent(this, FotoActivity.class);
             i.putExtra("tramo", t);
             startActivity(i);
+        }
+    }
+
+    public boolean isServerReachable() {
+        try {
+            InetAddress serverAddress = InetAddress.getByName("http://192.168.1.52:8080/RadarDeTramoServidor");
+            return serverAddress.isReachable(5000); // Tiempo de espera de 5000 ms (5 segundos)
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }
