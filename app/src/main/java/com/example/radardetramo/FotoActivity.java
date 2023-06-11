@@ -76,18 +76,18 @@ public class FotoActivity extends AppCompatActivity {
         Log.i("Tramo", this.t.toString());
 
         ImageView imageCoche = (ImageView) findViewById(R.id.imageCoche);
-        //Bitmap bitmap = ((BitmapDrawable) imageCoche.getDrawable()).getBitmap();
-        //ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        //bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        //byte[] imageInByte = baos.toByteArray();
+        Bitmap bitmap = ((BitmapDrawable) imageCoche.getDrawable()).getBitmap();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imageInByte = baos.toByteArray();
 
         pv.setFecha_hora(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
         pv.setPunto_kilometrico(this.t.getPunto_kilometrico());
-        //pv.setFoto(imageInByte);
-        pv.setFoto(null);
+        pv.setFoto(imageInByte);
+        //pv.setFoto(null);
         pv.setId_tramo(this.t.getId());
         pv.setVelocidad(0);
-        pv.setMatricula_vehiculo(null);
+        pv.setMatricula_vehiculo("1234ABC");
 
         enviarDatos(pv);
 
