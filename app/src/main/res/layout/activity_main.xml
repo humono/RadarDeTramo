@@ -20,13 +20,13 @@
         app:layout_constraintVertical_bias="0.713" />
 
     <EditText
-        android:id="@+id/editTextCarretera"
+        android:id="@+id/editTextIdTramo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="72dp"
         android:ems="10"
-        android:hint="Nombre de la carretera"
-        android:inputType="textCapCharacters"
+        android:hint="Id del tramo"
+        android:inputType="number"
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/editTextKilometro"
         app:layout_constraintEnd_toEndOf="parent"

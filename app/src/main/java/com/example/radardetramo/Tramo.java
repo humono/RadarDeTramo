@@ -4,37 +4,47 @@ import java.io.Serializable;
 
 
 public class Tramo implements Serializable {
-    private String carretera;
-    private String puntoKilometrico;
+    private int id;
+    private float punto_kilometrico;
+    private int id_carretera;
 
     public Tramo() {}
 
-    public Tramo(String carretera, String puntoKilometrico) {
-        this.carretera = carretera;
-        this.puntoKilometrico = puntoKilometrico;
+    public Tramo(int id, float punto_kilometrico, int id_carretera) {
+        this.id = id;
+        this.punto_kilometrico = punto_kilometrico;
+        this.id_carretera = id_carretera;
     }
 
     @Override
     public String toString() {
         return "Tramo{" +
-                "carretera='" + carretera + '\'' +
-                ", puntoKilometrico=" + puntoKilometrico +
+                "id=" + id +
+                ", punto_kilometrico=" + punto_kilometrico +
+                ", id_carretera=" + id_carretera +
                 '}';
     }
 
-    public String getCarretera() {
-        return carretera;
+    public int getId() {
+        return id;
     }
 
-    public void setCarretera(String carretera) {
-        this.carretera = carretera;
+    public void setId(int id) {
+        this.id = id;
+    }
+    public int getId_carretera() {
+        return id_carretera;
     }
 
-    public String getPuntoKilometrico() {
-        return puntoKilometrico;
+    public void setId_carretera(int id_carretera) {
+        this.id_carretera = id_carretera;
     }
 
-    public void setPuntoKilometrico(String puntoKilometrico) {
-        this.puntoKilometrico = puntoKilometrico;
+    public float getPunto_kilometrico(){
+        return punto_kilometrico;
+    }
+
+    public void setPunto_kilometrico(float puntoKilometrico) {
+        this.punto_kilometrico = puntoKilometrico;
     }
 }
