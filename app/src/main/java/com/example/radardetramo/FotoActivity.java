@@ -5,41 +5,27 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
-import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Url;
 
 public class FotoActivity extends AppCompatActivity {
 
     Tramo t;
-    final String URLSTRING = "http://192.168.1.52:8080/RadarDeTramoServidor/";
+    final String URLSTRING = "http://localhost:8080/RadarDeTramo/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,18 +36,21 @@ public class FotoActivity extends AppCompatActivity {
         ImageView imageCoche = (ImageView) findViewById(R.id.imageCoche);
 
         Random rdm = new Random();
-        int numero = rdm.nextInt(4 - 1 + 1) + 1;
+        int numero = rdm.nextInt(5 - 1 + 1) + 1;
         if (numero == 1) {
-            imageCoche.setImageResource(R.drawable.jpf1712);
+            imageCoche.setImageResource(R.drawable.kkj3253);
         }
         if (numero == 2) {
-            imageCoche.setImageResource(R.drawable.ktv4867);
+            imageCoche.setImageResource(R.drawable.ksf8016);
         }
         if (numero == 3) {
-            imageCoche.setImageResource(R.drawable.lhs7465);
+            imageCoche.setImageResource(R.drawable.kzs8806);
         }
         if (numero == 4) {
-            imageCoche.setImageResource(R.drawable.ltv6631);
+            imageCoche.setImageResource(R.drawable.lvx5609);
+        }
+        if (numero == 5) {
+            imageCoche.setImageResource(R.drawable.zgz2008);
         }
     }
 
@@ -81,13 +70,13 @@ public class FotoActivity extends AppCompatActivity {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] imageInByte = baos.toByteArray();
 
+        pv.setId(1);
         pv.setFecha_hora(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
         pv.setPunto_kilometrico(this.t.getPunto_kilometrico());
         pv.setFoto(imageInByte);
-        //pv.setFoto(null);
         pv.setId_tramo(this.t.getId());
         pv.setVelocidad(0);
-        pv.setMatricula_vehiculo("1234ABC");
+        pv.setMatricula_vehiculo("");
 
         enviarDatos(pv);
 
@@ -115,7 +104,7 @@ public class FotoActivity extends AppCompatActivity {
                         " || Id tramo " + pv.getId_tramo() + " || pk: " + pv.getPunto_kilometrico());
                 Log.i("Imagen del infractor", Arrays.toString(pv.getFoto()));
                 if (response.isSuccessful()) {
-                   //COrrecto
+                    //COrrecto
                 } else {
                     Log.i("Error en en envío", response.message());
                     Log.i("Error en envío de infractor", "Fecha/hora: " + pv.getFecha_hora() +
