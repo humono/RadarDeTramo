@@ -1,16 +1,24 @@
 package com.example.radardetramo;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 
 public class PasoVehiculo implements Serializable{
-
+    @SerializedName("id")
     private int id;
+    @SerializedName("fecha_hora")
     private long fecha_hora;
+    @SerializedName("punto_kilometrico")
     private float punto_kilometrico;
+    @SerializedName("velocidad")
     private float velocidad;
+    @SerializedName("foto")
     private byte[] foto;
+    @SerializedName("matricula_vehiculo")
     private String matricula_vehiculo;
+    @SerializedName("id_tramo")
     private int id_tramo;
 
     public PasoVehiculo() {

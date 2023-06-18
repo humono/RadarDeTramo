@@ -14,33 +14,31 @@
         android:text="Volver a selección de tramo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.947" />
+        app:layout_constraintVertical_bias="0.732" />
 
     <Button
         android:id="@+id/buttonEnviar"
         android:layout_width="278dp"
         android:layout_height="51dp"
-        android:layout_marginTop="572dp"
+        android:layout_marginBottom="12dp"
         android:onClick="enviarPasoDeVehiculo"
         android:text="Enviar paso de vehículo"
         app:layout_constraintBottom_toTopOf="@+id/buttonVolver"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.666" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/imageCoche"
-        android:layout_width="388dp"
-        android:layout_height="554dp"
-        android:layout_marginBottom="20dp"
+        android:layout_width="396dp"
+        android:layout_height="392dp"
+        android:layout_marginBottom="28dp"
         app:layout_constraintBottom_toTopOf="@+id/buttonEnviar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.478"
+        app:layout_constraintHorizontal_bias="0.466"
         app:layout_constraintStart_toStartOf="parent"
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,27 +5,30 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.google.gson.Gson;
+
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Arrays;
 import java.util.Random;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Retrofit;
+import retrofit2.*;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class FotoActivity extends AppCompatActivity {
 
     Tramo t;
-    final String URLSTRING = "http://localhost:8080/RadarDeTramo/";
+    final String URLSTRING = "http://192.168.1.53:8080/RadarDeTramo/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,19 +68,21 @@ public class FotoActivity extends AppCompatActivity {
         Log.i("Tramo", this.t.toString());
 
         ImageView imageCoche = (ImageView) findViewById(R.id.imageCoche);
-        Bitmap bitmap = ((BitmapDrawable) imageCoche.getDrawable()).getBitmap();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] imageInByte = baos.toByteArray();
+        Drawable drawable = imageCoche.getDrawable();
+        Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream); // Se podría cambiar a PNG
+        byte[] imageBytes = outputStream.toByteArray();
 
         pv.setId(1);
         pv.setFecha_hora(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
         pv.setPunto_kilometrico(this.t.getPunto_kilometrico());
-        pv.setFoto(imageInByte);
+        pv.setFoto(imageBytes);
         pv.setId_tramo(this.t.getId());
         pv.setVelocidad(0);
         pv.setMatricula_vehiculo("");
 
+        Log.i("Paso de vehículo", pv.toString());
         enviarDatos(pv);
 
         Intent i = new Intent(this, FotoActivity.class);
@@ -87,34 +92,32 @@ public class FotoActivity extends AppCompatActivity {
 
 
     public void enviarDatos(PasoVehiculo pv) {
+        Gson gson = new Gson();
+        String json = gson.toJson(pv);
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), json);
+
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(URLSTRING)
+                .baseUrl("http://192.168.1.53:8080/RadarDeTramo/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         ApiService apiService = retrofit.create(ApiService.class);
 
-        Call<Void> call = apiService.insertar(pv);
-
-        call.enqueue(new Callback<Void>() {
+        Call<ResponseBody> call = apiService.insertar(pv);
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                Log.i("Envío correcto", response.message());
-                Log.i("Envío de infractor", "Fecha/hora: " + pv.getFecha_hora() +
-                        " || Id tramo " + pv.getId_tramo() + " || pk: " + pv.getPunto_kilometrico());
-                Log.i("Imagen del infractor", Arrays.toString(pv.getFoto()));
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    //COrrecto
+                    Log.i("Inserción correcta", pv.toString());
                 } else {
-                    Log.i("Error en en envío", response.message());
-                    Log.i("Error en envío de infractor", "Fecha/hora: " + pv.getFecha_hora() +
-                            " || Id tramo " + pv.getId_tramo() + " || pk: " + pv.getPunto_kilometrico());
+                    Log.e("Error en la solicitud", "Ha habido algún error en la solicitud");
                 }
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                Log.i("Error", "Error en la comunicación con el servidor");
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("Error desconocido", "Ha habido algún error");
             }
         });
     }
