@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     public void pasarAFoto(View v) {
         EditText tramo = findViewById(R.id.editTextIdTramo);
         EditText puntoKilometrico = findViewById(R.id.editTextKilometro);
+        EditText ip = findViewById(R.id.editTextIp);
 
         tramo.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.grey)));
         puntoKilometrico.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.grey)));
@@ -40,11 +41,13 @@ public class MainActivity extends AppCompatActivity {
             Tramo t = new Tramo();
             t.setId(Integer.parseInt(tramo.getText().toString()));
             t.setPunto_kilometrico(Float.parseFloat(puntoKilometrico.getText().toString()));
+            String ipString = ip.getText().toString();
             Log.i("ID del tramo", "" + t.getId());
             Log.i("kilómetro", "" + t.getPunto_kilometrico());
 
             Intent i = new Intent(this, FotoActivity.class);
             i.putExtra("tramo", t);
+            i.putExtra("ip", ipString);
             startActivity(i);
         }
     }

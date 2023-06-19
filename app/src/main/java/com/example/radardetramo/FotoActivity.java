@@ -28,13 +28,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class FotoActivity extends AppCompatActivity {
 
     Tramo t;
-    final String URLSTRING = "http://192.168.1.53:8080/RadarDeTramo/";
+    String urlString = "http://192.168.1.53:8080/RadarDeTramo/";
+    String ip = "192.168.1.53";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_foto);
         t = (Tramo) getIntent().getSerializableExtra("tramo");
+        this.ip = getIntent().getStringExtra("ip");
+        this.urlString = "http://" + ip + ":8080/RadarDeTramo/";
+        Log.i("Ip configurada", this.urlString );
 
         ImageView imageCoche = (ImageView) findViewById(R.id.imageCoche);
 
@@ -87,6 +91,7 @@ public class FotoActivity extends AppCompatActivity {
 
         Intent i = new Intent(this, FotoActivity.class);
         i.putExtra("tramo", this.t);
+        i.putExtra("ip", this.ip);
         startActivity(i);
     }
 
